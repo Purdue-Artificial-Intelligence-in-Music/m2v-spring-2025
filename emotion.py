@@ -1,4 +1,4 @@
-x"""
+"""
 This file contains various emotional analysis methods, that accept an audio file as input
 and return either chords (groupings of harmonics) or "concepts" (mappings of interval changes to text descriptions).
 """
