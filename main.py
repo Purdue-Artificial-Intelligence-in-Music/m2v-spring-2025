@@ -59,15 +59,19 @@ def audio_to_emotion_video(audio_file: str,
         print("Done!")
 
 if __name__ == "__main__":
-    input_dir = input("Enter input directory, or press Enter for default: ")
+    input_dir = input("Enter input directory (or file), or press Enter for default directory: ")
     if input_dir == "":
         input_dir = INPUT_DIR
     output_dir = input("Enter output directory, or press Enter for default: ")
     if output_dir == "":
         output_dir = OUTPUT_DIR
-    for file in os.listdir(input_dir):
-        if file.endswith(".mp3") or file.endswith(".wav"):
-            print("Processing", file)
-            audio_file = os.path.join(input_dir, file)
-            output_video = os.path.join(output_dir, file[:-4] + ".mp4")
-            audio_to_emotion_video(audio_file, output_video, debug_print=True)
+
+    if os.path.isdir(input_dir):
+        for file in os.listdir(input_dir):
+            if file.endswith(".mp3") or file.endswith(".wav"):
+                print("Processing", file)
+                audio_file = os.path.join(input_dir, file)
+                output_video = os.path.join(output_dir, file[:-4] + ".mp4")
+                audio_to_emotion_video(audio_file, output_video, debug_print=True)
+    elif os.path.isfile(input_dir):
+        # TODO finish later
