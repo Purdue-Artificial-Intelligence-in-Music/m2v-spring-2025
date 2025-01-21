@@ -104,6 +104,11 @@ def compute_relative_features(y: np.ndarray,
         rel_features["spectral_centroid"].append(spectral_centroid)
         rel_features["zero_crossing_rate"].append(zero_crossing_rate)
 
+    chords = chord_detection(y, sr, num_windows)
+    rel_features["concepts"] = map_interval_changes_to_concepts(chords)
+                                
+    return rel_features
+
 def analyze_audio(audio_file_path: str) -> dict:
     """
     Analyzes the audio file and extracts relevant features from it.
@@ -118,8 +123,6 @@ def analyze_audio(audio_file_path: str) -> dict:
     y, sr = librosa.load(audio_file_path, sr=None)
     features = {"relative": {}, "absolute": compute_absolute_features(y, sr)}
     features["relative"] = compute_relative_features(y, sr, features["absolute"]["num_windows"], features["absolute"]["window_length"])
-    chords = chord_detection(y, sr, features["absolute"]["num_windows"])
-    features["relative"]["concepts"] = map_interval_changes_to_concepts(chords)
     assert(feature_dict_validity(features))
 
     return features
