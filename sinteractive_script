@@ -1,0 +1,22 @@
+# Fill in these variables
+PATH_TO_FILES="/scratch/gilbreth/tnadolsk/m2v-spring-2025"
+PATH_TO_ENV="/scratch/gilbreth/tnadolsk/conda_envs/m2v-2025"
+
+sinteractive --nodes=1 --ntasks=1 --cpus-per-task=16 --gpus-per-node=1 --constraint="I|K"
+
+module load anaconda
+module load ffmpeg
+
+cd $PATH_TO_FILES
+
+conda activate $PATH_TO_ENV
+
+export MKL_NUM_THREADS=16
+export OPENBLAS_NUM_THREADS=16
+export OMP_NUM_THREADS=16
+
+echo "Setup done"
+
+python main.py
+
+echo "Job done"

@@ -191,3 +191,7 @@ scores/
 **/hf_token.txt
 
 *apiKey.txt
+
+# Input/output files
+./input/**
+./output/**
