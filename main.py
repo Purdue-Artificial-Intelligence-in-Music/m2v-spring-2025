@@ -19,6 +19,10 @@ NOTE 3: Tempo and BPM (Beats Per Minute) are the same thing.
 from feature_extraction import analyze_audio
 from image_generation import generate_images
 from util import create_video, clean_up
+import os
+
+INPUT_DIR = "./input"
+OUTPUT_DIR = "./output"
 
 def audio_to_emotion_video(audio_file: str, 
                            output_video_path: str, 
@@ -55,6 +59,15 @@ def audio_to_emotion_video(audio_file: str,
         print("Done!")
 
 if __name__ == "__main__":
-    audio_file = "input/playingGodUkulele.mp3"
-    output_video = "output/playingGod1.mp4"
-    audio_to_emotion_video(audio_file, output_video, debug_print=True)
+    input_dir = input("Enter input directory, or press Enter for default: ")
+    if input_dir == "":
+        input_dir = INPUT_DIR
+    output_dir = input("Enter output directory, or press Enter for default: ")
+    if output_dir == "":
+        output_dir = OUTPUT_DIR
+    for file in os.listdir(input_dir):
+        if file.endswith(".mp3") or file.endswith(".wav"):
+            print("Processing", file)
+            audio_file = os.path.join(input_dir, file)
+            output_video = os.path.join(output_dir, file[:-4] + ".mp4")
+            audio_to_emotion_video(audio_file, output_video, debug_print=True)

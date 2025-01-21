@@ -47,7 +47,7 @@ def map_interval_changes_to_concepts(chords: list[Chord]) -> list[str]:
     
     return concepts
 
-def chord_to_concepts(y: np.ndarray, sr: int, num_windows: int) -> list[Chord]:
+def chord_detection(y: np.ndarray, sr: int, num_windows: int) -> list[Chord]:
     """
     Does chord detection on a given input audio array and returns a list of chords
     @param y: the audio array
