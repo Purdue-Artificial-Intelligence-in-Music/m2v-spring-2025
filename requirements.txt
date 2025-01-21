@@ -1,0 +1,7 @@
+moviepy
+librosa
+pychord
+diffusers
+transformers
+torch
+accelerate
