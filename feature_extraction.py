@@ -63,13 +63,15 @@ def compute_absolute_features(y: np.ndarray,
         print(f"Audio duration: {audio_duration}")
         print(f"Window duration: {window_duration}")
         print(f"Number of windows: {num_windows}")
+        print(f"Window length: {window_length}")
 
-    
     # Store absolute features
     abs_features = {}
     abs_features["tempo"] = tempo
     abs_features["audioDuration"] = audio_duration
     abs_features["videoFrameDuration"] = window_duration
+    abs_features["num_windows"] = num_windows
+    abs_features["window_length"] = window_length
 
     return abs_features
 

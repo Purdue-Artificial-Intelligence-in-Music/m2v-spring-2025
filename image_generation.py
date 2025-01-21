@@ -26,6 +26,8 @@ def features_to_prompts(features: dict) -> list[str]:
     tempo = features["absolute"]["tempo"]
     concepts = features["relative"]["concepts"]
 
+    print(concepts)
+
     # Generate prompts
     prompts = []
     for _, concept in enumerate(concepts):
@@ -46,8 +48,6 @@ def generate_images(prompts: list[str], output_folder: str, pipe: StableDiffusio
 
     images = []
     for i, prompt in enumerate(prompts):
-        if i > 200:
-            break
         image = pipe(prompt, negative_prompt=NEGATIVE_PROMPT).images[0]
         image_name = f"frame_{i:03d}.png"
         image_path = os.path.join(output_folder, image_name)
