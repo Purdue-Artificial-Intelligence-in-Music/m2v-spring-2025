@@ -1,4 +1,4 @@
-# Fill in these variables
+# After updating these variables, copy and paste the contents of this script directly into the terminal
 PATH_TO_FILES="/scratch/gilbreth/tnadolsk/m2v-spring-2025"
 PATH_TO_ENV="/scratch/gilbreth/tnadolsk/conda_envs/m2v-2025"
 
