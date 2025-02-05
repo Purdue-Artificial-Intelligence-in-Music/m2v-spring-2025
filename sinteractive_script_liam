@@ -1,12 +1,12 @@
 # THIS IS ONLY FOR S-INTERACTIVE, NOT SBATCH!
 # Copy the below into terminal to run!
-# Remove constraint=I|K if you don't need 80G GPUs
+# add  [--constraint="I|K"] if you need 80G 
 
 # After updating these variables, copy and paste the contents of this script directly into the terminal
-PATH_TO_FILES="/scratch/gilbreth/tnadolsk/m2v-spring-2025"
-PATH_TO_ENV="/scratch/gilbreth/tnadolsk/conda_envs/m2v-2025"
+PATH_TO_FILES="~/lstonest/git-repos/m2v-spring-2025"
+PATH_TO_ENV="/scratch/gilbreth/lstonest/envs/mus2vid"
 
-sinteractive --nodes=1 --ntasks=1 --cpus-per-task=16 --gpus-per-node=1 --constraint="I|K"
+sinteractive --nodes=1 --ntasks=1 --cpus-per-task=16 --gpus-per-node=1
 
 module load anaconda
 module load ffmpeg
