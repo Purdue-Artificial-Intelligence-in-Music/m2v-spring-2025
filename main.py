@@ -59,7 +59,7 @@ def audio_to_emotion_video(audio_file: str,
     if debug_print:
         print("Done!")
 
-if __name__ == "__main__":
+def main():
     input_dir = input("Enter input directory (or file), or press Enter for default directory: ")
     if input_dir == "":
         input_dir = INPUT_DIR
