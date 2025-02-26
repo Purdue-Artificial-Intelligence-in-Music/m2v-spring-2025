@@ -18,13 +18,50 @@ NOTE 3: Tempo and BPM (Beats Per Minute) are the same thing.
 
 from feature_extraction import analyze_audio
 from image_generation import generate_images, features_to_prompts
-from util import create_video, clean_up
+from video_generation import generate_videos
+from util import frames_to_video, clean_up
 import os
 
 INPUT_DIR = "./input"
 OUTPUT_DIR = "./output"
 
-def audio_to_emotion_video(audio_file: str, 
+def video_pipe(audio_file: str, 
+                           output_video_path: str, 
+                           debug_print: bool = False):
+    """
+    Generate a video based on the features of the audio file.
+    @param audio_file: the path to the audio file
+    @param output_video: the path to save the output video
+    """
+
+    # Step 1: Extract music information
+    if debug_print:
+        print("Analyzing audio...")
+    features = analyze_audio(audio_file)
+    
+    # Step 2: Generate frames
+    if debug_print:
+        print("Generating images...")
+    output_folder = "generated_frames"
+    prompts = features_to_prompts(features)
+    images = generate_videos(prompts, output_folder, features)
+
+    # Step 3: Create video
+    if debug_print:
+        print("Creating video...")
+    frames_to_video(features, output_folder, audio_file, output_video_path)
+    if debug_print:
+        print("Video created successfully!")
+
+    # Step 4: Clean up
+    if debug_print:
+        print("Cleaning up...")
+    clean_up(output_folder)
+    if debug_print:
+        print("Done!")
+
+# Our image generation pipeline.
+def image_pipe(audio_file: str, 
                            output_video_path: str, 
                            debug_print: bool = False):
     """
@@ -48,7 +85,7 @@ def audio_to_emotion_video(audio_file: str,
     # Step 3: Create video
     if debug_print:
         print("Creating video...")
-    create_video(features, output_folder, audio_file, output_video_path)
+    frames_to_video(features, output_folder, audio_file, output_video_path)
     if debug_print:
         print("Video created successfully!")
 
@@ -60,26 +97,22 @@ def audio_to_emotion_video(audio_file: str,
         print("Done!")
 
 def main():
-    input_dir = input("Enter input directory (or file), or press Enter for default directory: ")
-    if input_dir == "":
-        input_dir = INPUT_DIR
-    output_dir = input("Enter output directory, or press Enter for default: ")
-    if output_dir == "":
-        output_dir = OUTPUT_DIR
+    # Select pipeline
+    pipe_type = input("Type 'video' or 'image' to select a pipeline: ")
+    pipe = video_pipe if pipe_type == "video" else image_pipe
 
-    if os.path.isdir(input_dir):
-        for file in os.listdir(input_dir):
-            if file.endswith(".mp3") or file.endswith(".wav"):
-                print("Processing", file)
-                audio_file = os.path.join(input_dir, file)
-                output_video = os.path.join(output_dir, file[:-4] + ".mp4")
-                audio_to_emotion_video(audio_file, output_video, debug_print=True)
-    elif os.path.isfile(input_dir):
-        file = input_dir
-        print("Processing", file)
-        audio_file = os.path.join(input_dir, file)
-        output_video = os.path.join(output_dir, file[:-4] + ".mp4")
-        audio_to_emotion_video(audio_file, output_video, debug_print=True)
+    # Get input file
+    input_file = input("Enter input file name WITH file extension (must be inside 'input' directory): ")
+    input_path = f"{INPUT_DIR}/{input_file}"
+    while os.path.isdir(input_path):
+        print("That is a directory. Please enter a file instead.")
+        input_file = input("Enter input file (must be inside 'input' directory): ")
+        input_path = f"{INPUT_DIR}/{input_file}"
+
+    # Process!
+    print("Processing", input_file)
+    output_video = os.path.join(OUTPUT_DIR, input_file[:-4] + ".mp4")
+    pipe(input_path, output_video, debug_print=True)
 
 
 if __name__ == "__main__":

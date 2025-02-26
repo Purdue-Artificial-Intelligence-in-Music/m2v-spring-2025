@@ -12,6 +12,12 @@ This is the Github project containing all code pertaining to Mus2Vid's pivot, st
 5. Run ``./main.py``. Press Enter to use the default directories for input and output.
 6. ``./main.py`` will generate "slideshow" videos from your music inputs.
 
+## Adding your own LLM API Keys
+
+1. Create a text file in the 'keys' directory with the following name format: "{type}ApiKey.txt". {type} must be lowercase.
+    - examples: "gemeniApiKey.txt", "gptApiKey.txt"
+2. Use the 'get_api_key(type)' method in utils.py!
+
 ## Important Format to Follow
 
 You'll notice that most scripts have a multi-line comment at the top, explaining what the script is about, its purpose, etc. 

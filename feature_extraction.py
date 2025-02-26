@@ -27,16 +27,23 @@ features = {"relative": {
 def feature_dict_validity(features: dict) -> bool:
     """
     Checks if the feature dictionary is valid.
-    @param features: the feature dictionary
-    @return: True if the feature dictionary is valid, else False
+    
+    @param features: The feature dictionary.
+    @return: True if the feature dictionary is valid, else False.
     """
-    if "relative" not in features or "absolute" not in features:
-        return False
-    if "rms" not in features["relative"] or "spectral_centroid" not in features["relative"] or "zero_crossing_rate" not in features["relative"] or "concepts" not in features["relative"]:
-        return False
-    if "tempo" not in features["absolute"] or "audioDuration" not in features["absolute"] or "videoFrameDuration" not in features["absolute"]:
-        return False
-    return True
+    required_relative_keys = {"rms", "spectral_centroid", "zero_crossing_rate", "concepts"}
+    required_absolute_keys = {"tempo", "audio_duration", "video_frame_duration"}
+
+    return (
+        isinstance(features, dict)
+        and "relative" in features
+        and "absolute" in features
+        and isinstance(features["relative"], dict)
+        and isinstance(features["absolute"], dict)
+        and required_relative_keys.issubset(features["relative"])
+        and required_absolute_keys.issubset(features["absolute"])
+    )
+
 
 def compute_absolute_features(y: np.ndarray, 
                               sr: int, 
@@ -68,8 +75,9 @@ def compute_absolute_features(y: np.ndarray,
     # Store absolute features
     abs_features = {}
     abs_features["tempo"] = tempo
-    abs_features["audioDuration"] = audio_duration
-    abs_features["videoFrameDuration"] = window_duration
+    abs_features["average_loudness"] = np.mean(librosa.feature.rms(y=y))
+    abs_features["audio_duration"] = audio_duration
+    abs_features["video_frame_duration"] = window_duration
     abs_features["num_windows"] = num_windows
     abs_features["window_length"] = window_length
 
@@ -88,7 +96,7 @@ def compute_relative_features(y: np.ndarray,
     @return: a dictionary containing the extracted features
     """
     rel_features = { 
-        "rms": [],
+        "rms": [], 
         "spectral_centroid": [],
         "zero_crossing_rate": [],
     }
@@ -98,6 +106,7 @@ def compute_relative_features(y: np.ndarray,
         end = start + window_length
         window = y[start:end] # the window
         rms = np.mean(librosa.feature.rms(y=window))
+        
         spectral_centroid = np.mean(librosa.feature.spectral_centroid(y=window, sr=sr))
         zero_crossing_rate = np.mean(librosa.feature.zero_crossing_rate(y=window))
 

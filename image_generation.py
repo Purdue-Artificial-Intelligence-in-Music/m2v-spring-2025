@@ -3,6 +3,7 @@ This file contains methods to generate images from features and save them to an 
 """
 
 from diffusers import StableDiffusionPipeline
+from util import get_prompt
 import os
 
 NEGATIVE_PROMPT = "humans, shapes, letters, low quality, blurry, painting frame"
@@ -31,7 +32,8 @@ def features_to_prompts(features: dict) -> list[str]:
     # Generate prompts
     prompts = []
     for _, concept in enumerate(concepts):
-        prompt = f"A surreal painting representing {concept}; conveying the musical chaotic peace associated with the Tempo value of {tempo}; cinematic!"
+        prompt = get_prompt('image')
+        prompt = prompt.format(concept=concept, tempo=tempo)
         prompts.append(prompt)
 
     return prompts
