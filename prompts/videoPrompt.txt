@@ -29,10 +29,10 @@ You are an AI prompt generator specialized in crafting highly detailed, emotiona
 
 ### **Music Segment Data for This {type}:**
 - **Tempo:** {tempo} BPM
-- **Audio Duration:** {audioDuration} sec
-- **Video Frame Duration:** {videoFrameDuration} sec
-- **Average Loudness:** {averageLoudness} dB
-- **Current Loudness:** {currentLoudness} dB
+- **Audio Duration:** {audio_duration} sec
+- **Video Frame Duration:** {video_frame_duration} sec
+- **Average Loudness:** {average_loudness} dB
+- **Current Loudness:** {current_loudness} dB
 - **Spectral Centroid:** {spectral_centroid}
 - **Zero Crossing Rate:** {zero_crossing_rate}
 - **Concepts:** {concepts}
@@ -45,4 +45,4 @@ Using the provided music data, generate an **exceptionally vivid and specific {t
 - **Composition, lighting, and movement align with extracted features.**
 - **The generated {type} uniquely reflects the music’s emotion, avoiding generic or repetitive visuals.**
 
-Now, create a highly detailed {type} prompt aligned with the given music features.
+Now, create a highly detailed {type} prompt aligned with the given music features. KEEP IT TO 77 TOKENS OR LESS!

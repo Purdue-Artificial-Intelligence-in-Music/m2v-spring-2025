@@ -8,7 +8,9 @@ import shutil
 
 def get_api_key(type="gemini"):
     with open(f'./keys/{type}ApiKey.txt', 'r') as file:
-        return file.readline() # READS THE FIRST LINE ONLY
+        key = file.readline()
+        key = key.replace("\n", "")
+        return key # READS THE FIRST LINE ONLY
 
 def get_prompt(type="video"):
     """
@@ -16,15 +18,6 @@ def get_prompt(type="video"):
     """
     with open(f'./prompts/{type}Prompt.txt', 'r') as file:
         prompt = ' '.join(file.readlines())
-        if type == 'video':
-            # currently, our videoPrompt.txt contains a prompt that could be either video or image prompt.
-            prompt = prompt.format(
-                type='video',
-                frame_description="sequence of evolving visuals",
-                motion_fast="Scenes with rapid motion, dramatic camera sweeps, intense lighting shifts.",
-                motion_slow="Still, dreamlike, atmospheric movements, focusing on soft transitions.",
-                motion_mid="Balanced motion with gradual, smooth evolution."
-            )
         return prompt
 
 def frames_to_video(features: dict, 

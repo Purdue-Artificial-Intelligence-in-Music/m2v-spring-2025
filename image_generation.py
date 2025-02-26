@@ -17,7 +17,7 @@ def load_default_pipe() -> StableDiffusionPipeline:
     pipe.to("cuda")
     return pipe
 
-def features_to_prompts(features: dict) -> list[str]:
+def features_to_image_prompts(features: dict) -> list[str]:
     """
     Generate prompts based on the input music features.
     @param features: a dictionary containing the extracted features

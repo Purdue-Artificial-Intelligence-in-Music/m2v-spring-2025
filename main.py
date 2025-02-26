@@ -17,8 +17,8 @@ NOTE 3: Tempo and BPM (Beats Per Minute) are the same thing.
 """
 
 from feature_extraction import analyze_audio
-from image_generation import generate_images, features_to_prompts
-from video_generation import generate_videos
+from image_generation import generate_images, features_to_image_prompts
+from video_generation import generate_videos, features_to_llm_prompts, llm_to_video_prompts
 from util import frames_to_video, clean_up
 from diffusers.utils import logging
 import os
@@ -46,24 +46,21 @@ def video_pipe(audio_file: str,
         print("Analyzing audio...")
     features = analyze_audio(audio_file)
     
-    # Step 2: Generate frames
+    # Step 2: Generate LLM and video prompts
+    output_folder = "./output"
     if debug_print:
-        print("Generating scenes...")
-    output_folder = "generated_frames"
-    prompts = features_to_prompts(features)
-    generate_videos(prompts, output_folder, features)
+        print("Generating LLM prompts...")
+    llm_prompts = features_to_llm_prompts(features)
+    if debug_print:
+        print("Generating Video Generation prompts...")
+    video_prompts = llm_to_video_prompts(llm_prompts)
 
     # Step 3: Create video
     if debug_print:
         print("Creating video...")
-    frames_to_video(features, output_folder, audio_file, output_video_path)
+    generate_videos(video_prompts, output_folder, features, audio_file)
     if debug_print:
         print("Video created successfully!")
-
-    # Step 4: Clean up
-    if debug_print:
-        print("Cleaning up...")
-    clean_up(output_folder)
     if debug_print:
         print("Done!")
 
@@ -86,7 +83,7 @@ def image_pipe(audio_file: str,
     if debug_print:
         print("Generating images...")
     output_folder = "generated_frames"
-    prompts = features_to_prompts(features)
+    prompts = features_to_image_prompts(features)
     generate_images(prompts, output_folder)
 
     # Step 3: Create video
