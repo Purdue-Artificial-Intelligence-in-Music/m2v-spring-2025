@@ -32,7 +32,7 @@ MODEL_PARAMS = {
         jerky motion, poor lighting, poorly composed, artifacts, noise, oversharpened, \
         dull, flat lighting, cartoonish, ugly, text, watermark,",
     "guidance_scale": 6,
-    "num_inference_steps": 20,
+    "num_inference_steps": 5,
     "fps": 8# I don't think we can change this. 8 is the default for AnimateDiff
 }
 
@@ -55,8 +55,7 @@ def load_default_pipe():
     # enable memory savings
     pipe.enable_vae_slicing()
     pipe.enable_model_cpu_offload()
-
-    return pipe, adapter
+    return pipe
 
 def features_to_prompts(features: dict) -> list[str]:
     """
@@ -109,21 +108,28 @@ def generate_videos(prompts: list[str], output_folder: str, features: dict, pipe
 
     frames = []
     seed = random.randint(0, 2**32)
+    num_frames = max(12, int(MODEL_PARAMS['fps'] * features["absolute"]["video_frame_duration"]))
+    print(f"Generating {len(prompts)} scenes...")
     for i, prompt in enumerate(prompts):
         scene = pipe(
             prompt, 
             negative_prompt=MODEL_PARAMS['negative_prompt'],
-            num_frames=int(MODEL_PARAMS['fps'] * features["absolute"]["video_frame_duration"]),
+            num_frames=num_frames,
             guidance_scale=MODEL_PARAMS['guidance_scale'],
             num_inference_steps=MODEL_PARAMS['num_inference_steps'],
             generator=torch.Generator().manual_seed(seed),
             output_type="np" # numpy array
         )
         frames.extend(scene.frames[0])
-    output_file = "./output/test_video.mp4" # TODO: make this dynamic
-    # frames_pil = [Image.fromarray(frame.astype(np.uint8)) for frame in frames]
+    
+    # Exporting as .mp4 file!
+    i = 1
+    output_file = f"./output/test_video{i}.mp4" # TODO: make this dynamic
+    while os.path.isfile(output_file):
+        i += 1
+        output_file = f"./output/test_video_{i}.mp4"
     export_to_video(frames, output_file)
-    return frames
+
         
         
 

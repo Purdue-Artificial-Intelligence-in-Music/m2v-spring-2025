@@ -20,7 +20,14 @@ from feature_extraction import analyze_audio
 from image_generation import generate_images, features_to_prompts
 from video_generation import generate_videos
 from util import frames_to_video, clean_up
+from diffusers.utils import logging
 import os
+import warnings
+
+# Disable warnings
+logging.set_verbosity_error()
+warnings.filterwarnings("ignore", message="You have disabled the safety checker")
+
 
 INPUT_DIR = "./input"
 OUTPUT_DIR = "./output"
@@ -41,10 +48,10 @@ def video_pipe(audio_file: str,
     
     # Step 2: Generate frames
     if debug_print:
-        print("Generating images...")
+        print("Generating scenes...")
     output_folder = "generated_frames"
     prompts = features_to_prompts(features)
-    images = generate_videos(prompts, output_folder, features)
+    generate_videos(prompts, output_folder, features)
 
     # Step 3: Create video
     if debug_print:
@@ -80,7 +87,7 @@ def image_pipe(audio_file: str,
         print("Generating images...")
     output_folder = "generated_frames"
     prompts = features_to_prompts(features)
-    images = generate_images(prompts, output_folder)
+    generate_images(prompts, output_folder)
 
     # Step 3: Create video
     if debug_print:
@@ -102,7 +109,10 @@ def main():
     pipe = video_pipe if pipe_type == "video" else image_pipe
 
     # Get input file
-    input_file = input("Enter input file name WITH file extension (must be inside 'input' directory): ")
+    default_file = "playingGodUkulele.mp3"
+    input_file = input("Enter input file name WITH file extension (must be inside 'input' directory),\
+        or ENTER for default test file: ")
+    if input_file == "": input_file = default_file
     input_path = f"{INPUT_DIR}/{input_file}"
     while os.path.isdir(input_path):
         print("That is a directory. Please enter a file instead.")
