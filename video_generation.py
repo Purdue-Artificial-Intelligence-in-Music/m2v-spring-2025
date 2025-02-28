@@ -19,7 +19,7 @@ from vsrife import rife
 import numpy as np
 import vapoursynth as vs
 from util import get_prompt
-from moviepy import AudioFileClip, ImageSequenceClip, ImageClip, concatenate_videoclips
+from moviepy import AudioFileClip, VideoFileClip, ImageSequenceClip, ImageClip, concatenate_videoclips
 
 
 SCHEDULER_PARAMS = {
@@ -35,7 +35,7 @@ MODEL_PARAMS = {
         jerky motion, poor lighting, poorly composed, artifacts, noise, oversharpened, \
         dull, flat lighting, cartoonish, ugly, text, watermark,",
     "guidance_scale": 6,
-    "num_inference_steps": 5,
+    "num_inference_steps": 15,
     "fps": 8 # I don't think we can change this. 8 is the default for AnimateDiff
 }
 
@@ -137,19 +137,21 @@ def generate_videos(prompts: list[str], output_folder: str, features: dict, audi
     total_frames = int(audio_duration * fps)  # Ensure video matches audio length
     num_frames_per_scene = max(4, total_frames // len(prompts))  # Distribute frames per scene
 
+    # TODO Make this equal to len(prompts)
     print(f"Generating {len(prompts)} scenes, total frames: {total_frames}...")
 
-    frames = []
+    frames = [] # list of all frames of all scenes
     seed = random.randint(0, 2**32)
     for i, prompt in enumerate(prompts):
         scene = pipe(
-            prompt, 
+            prompt if prompt else "a video of a cat playing with a ball", 
+            image=frames[-1] if frames else None,
             negative_prompt=MODEL_PARAMS['negative_prompt'],
             num_frames=num_frames_per_scene,
             guidance_scale=MODEL_PARAMS['guidance_scale'],
             num_inference_steps=MODEL_PARAMS['num_inference_steps'],
             generator=torch.Generator().manual_seed(seed),
-            output_type="np" # numpy array
+            output_type="np" # pil array? (put 'np' for numpy)
         )
         frames.extend(scene.frames[0])
     
@@ -160,21 +162,28 @@ def generate_videos(prompts: list[str], output_folder: str, features: dict, audi
     elif len(frames) > total_frames:
         frames = frames[:total_frames]
 
-    # Convert NumPy frames to ImageSequenceClip directly (No file I/O)
-    video = ImageSequenceClip(frames, fps=fps)
-    video = video.with_audio(audio)
-
-    # Set the output file name
+    # Compute output file name!
     i = 1
     output_file = f"{output_folder}/test_video_{i}.mp4" # TODO: make this dynamic
     while os.path.isfile(output_file):
         i += 1
-        output_file = f"./output/test_video_{i}.mp4"
+        output_file = f"{output_folder}/test_video_{i}.mp4"
+    
+    # Method 0) export_to_video() (with frames)
+
+    # Export video
+    export_to_video(frames, output_file)
+
+    # TODO: fix adding audio
+    # # Add audio
+    # final_video = VideoFileClip(output_file)
+    # final_video = final_video.with_audio(audio)
+
+    # # Re-export video
+    # final_video.write_videofile(output_file, codec="libx264", audio_codec="aac")
+    # print(f"Final video saved: {output_file}")
 
 
-    video.write_videofile(output_file, fps=fps, codec="libx264", audio_codec="aac")
-    print(f"Final video saved: {output_file}")
-    # return output_file
 
         
         

@@ -47,10 +47,10 @@ def video_pipe(audio_file: str,
     features = analyze_audio(audio_file)
     
     # Step 2: Generate LLM and video prompts
-    output_folder = "./output"
     if debug_print:
-        print("Generating LLM prompts...")
-    llm_prompts = features_to_llm_prompts(features)
+        print("Generating LLM prompts with extracted features...")
+    # llm_prompts = features_to_llm_prompts(features)
+    llm_prompts = features_to_image_prompts(features) # FOR TESTING
     if debug_print:
         print("Generating Video Generation prompts...")
     video_prompts = llm_to_video_prompts(llm_prompts)
@@ -58,10 +58,9 @@ def video_pipe(audio_file: str,
     # Step 3: Create video
     if debug_print:
         print("Creating video...")
-    generate_videos(video_prompts, output_folder, features, audio_file)
+    generate_videos(video_prompts, OUTPUT_DIR, features, audio_file)
     if debug_print:
         print("Video created successfully!")
-    if debug_print:
         print("Done!")
 
 # Our image generation pipeline.
@@ -101,24 +100,36 @@ def image_pipe(audio_file: str,
         print("Done!")
 
 def main():
+    # Fast Testing! (if true, no input required; will auto-test video pipeline on 'playingGodUkulele.mp3')
+    fast_testing = True
+    fast_testing_pipe = "video"
+
     # Select pipeline
-    pipe_type = input("Type 'video' or 'image' to select a pipeline: ")
+    if fast_testing:
+        pipe_type = fast_testing_pipe
+    else:
+        pipe_type = input("Type 'video' or 'image' to select a pipeline: ")
     pipe = video_pipe if pipe_type == "video" else image_pipe
 
     # Get input file
     default_file = "playingGodUkulele.mp3"
-    input_file = input("Enter input file name WITH file extension (must be inside 'input' directory),\
-        or ENTER for default test file: ")
-    if input_file == "": input_file = default_file
-    input_path = f"{INPUT_DIR}/{input_file}"
-    while os.path.isdir(input_path):
-        print("That is a directory. Please enter a file instead.")
-        input_file = input("Enter input file (must be inside 'input' directory): ")
+    if fast_testing:
+        input_file = default_file
+    else:
+        input_file = input("Enter input file name WITH file extension (must be inside 'input' directory),\
+            or ENTER for default test file: ")
+        if input_file == "": input_file = default_file
         input_path = f"{INPUT_DIR}/{input_file}"
+        while os.path.isdir(input_path):
+            print("That is a directory. Please enter a file instead.")
+            input_file = input("Enter input file (must be inside 'input' directory): ")
+    input_path = f"{INPUT_DIR}/{input_file}"
+        
 
     # Process!
     print("Processing", input_file)
-    output_video = os.path.join(OUTPUT_DIR, input_file[:-4] + ".mp4")
+    output_dir = f"{OUTPUT_DIR}/video" if pipe_type == "video" else f"{OUTPUT_DIR}/image" 
+    output_video = os.path.join(output_dir, input_file[:-4] + ".mp4")
     pipe(input_path, output_video, debug_print=True)
 
 
