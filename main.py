@@ -58,7 +58,7 @@ def video_pipe(audio_file: str,
     # Step 3: Create video
     if debug_print:
         print("Creating video...")
-    generate_videos(video_prompts, OUTPUT_DIR, features, audio_file)
+    generate_videos(video_prompts, output_video_path, features, audio_file)
     if debug_print:
         print("Video created successfully!")
         print("Done!")
