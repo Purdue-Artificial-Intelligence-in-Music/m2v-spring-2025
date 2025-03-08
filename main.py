@@ -49,12 +49,14 @@ def video_pipe(audio_file: str,
     # Step 2: Generate LLM and video prompts
     if debug_print:
         print("Generating LLM prompts with extracted features...")
-    # llm_prompts = features_to_llm_prompts(features)
-    llm_prompts = features_to_image_prompts(features) # FOR TESTING
+
     if debug_print:
         print("Generating Video Generation prompts...")
-    video_prompts = llm_to_video_prompts(llm_prompts)
 
+    # llm_prompts = features_to_llm_prompts(features)
+    # video_prompts = llm_to_video_prompts(llm_prompts)
+    video_prompts = features_to_image_prompts(features) # FOR TESTING
+    
     # Step 3: Create video
     if debug_print:
         print("Creating video...")
@@ -129,8 +131,8 @@ def main():
     # Process!
     print("Processing", input_file)
     output_dir = f"{OUTPUT_DIR}/video" if pipe_type == "video" else f"{OUTPUT_DIR}/image" 
-    output_video = os.path.join(output_dir, input_file[:-4] + ".mp4")
-    pipe(input_path, output_video, debug_print=True)
+    # output_video = os.path.join(output_dir, input_file[:-4] + ".mp4")
+    pipe(input_path, output_dir, debug_print=True)
 
 
 if __name__ == "__main__":

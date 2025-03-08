@@ -126,8 +126,8 @@ def generate_videos(prompts: list[str], output_folder: str, features: dict, audi
     @param pipe: AnimateDiff pipeline for generating frames.
     """
 
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    # if not os.path.exists(output_folder):
+    #     os.makedirs(output_folder)
 
     # Get audio duration
     audio = AudioFileClip(audio_file)
@@ -154,6 +154,7 @@ def generate_videos(prompts: list[str], output_folder: str, features: dict, audi
             output_type="np" # pil array? (put 'np' for numpy)
         )
         frames.extend(scene.frames[0])
+        seed += 1
     
     # Ensure frame count matches expected total frames
     if len(frames) < total_frames:

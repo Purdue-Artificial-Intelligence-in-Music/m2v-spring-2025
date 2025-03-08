@@ -1,0 +1,27 @@
+# THIS IS ONLY FOR S-INTERACTIVE, NOT SBATCH!
+# Copy the below into terminal to run!
+# add  [--constraint="I|K"] if you need 80G 
+
+# After updating these variables, copy and paste the contents of this script directly into the terminal
+
+sinteractive --nodes=1 --ntasks=1 --cpus-per-task=16 --gpus-per-node=1 --time=1:00:00
+
+module load conda
+module load ffmpeg
+
+PATH_TO_FILES="/home/lstonest/git-repos/m2v-spring-2025/"
+PATH_TO_ENV="/scratch/gilbreth/lstonest/envs/mus2vid/"
+
+cd $PATH_TO_FILES
+
+conda activate $PATH_TO_ENV
+
+export MKL_NUM_THREADS=16
+export OPENBLAS_NUM_THREADS=16
+export OMP_NUM_THREADS=16
+
+echo "Setup done"
+
+python main.py
+
+echo "Job done"

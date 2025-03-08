@@ -7,10 +7,13 @@ This is the Github project containing all code pertaining to Mus2Vid's pivot, st
 1. Make a new Conda environment with Python 3.12.7, and activate said environment.
 (If on Gilbreth (one of Purdue's clusters), refer to https://www.rcac.purdue.edu/knowledge/gilbreth/run/examples/apps/python/conda)
 2. Clone this repo and ``cd`` to where the files are downloaded.
-3. Run ``pip install -r requirements.txt``.
-4. Put your input audio files in ``./input``. ".wav" or ".mp3" files only, please.
-5. Run ``./main.py``. Press Enter to use the default directories for input and output.
-6. ``./main.py`` will generate "slideshow" videos from your music inputs.
+3. Run ``pip install --index-url https://download.pytorch.org/whl/cu124 torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0``
+4. Run ``conda install -c conda-forge vapoursynth`` (the 'vsrife' module needs VapourSynth, which is troublesome to install normally)
+5. Run ``pip install -r requirements.txt``.
+6. Put your input audio files in ``./input``. ".wav" or ".mp3" files only, please.
+7. Create your own sinteractive script in the 'scripts' directory by copy-pasting the 'sinteractive' file and replacing paths with your own.
+8. Run all commands in your sinteractive script in your terminal. (you can copy-paste for ease)
+9. Done! This should automatically run ``main.py``, the file that actually runs the program.
 
 ## Adding your own LLM API Keys
 
