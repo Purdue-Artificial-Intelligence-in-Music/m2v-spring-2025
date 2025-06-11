@@ -1,0 +1,1 @@
+Link to ruptures test runs with outputs: https://colab.research.google.com/drive/13FfpB7goS9BnZS_IMLny0hMaKG_OkHUs?usp=sharing
